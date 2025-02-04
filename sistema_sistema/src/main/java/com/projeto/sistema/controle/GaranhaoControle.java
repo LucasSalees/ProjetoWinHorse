@@ -101,6 +101,7 @@ public class GaranhaoControle {
         if (garanhao.isPresent()) {
             model.addAttribute("garanhao", garanhao.get()); // Adiciona o objeto garanhão ao modelo
             model.addAttribute("nome_garanhao", garanhao.get().getNome_garanhao()); // Adiciona o nome do garanhão ao modelo
+            model.addAttribute("cor_palheta", garanhao.get().getCor_palheta());
             return "administrativo/garanhoes/eventoGaranhao"; // Retorna para a página de edição
         }
 

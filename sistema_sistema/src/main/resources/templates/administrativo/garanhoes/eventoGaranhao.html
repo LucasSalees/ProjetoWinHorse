@@ -395,24 +395,21 @@
 						<input type="text" required id="nome_garanhao" th:field="*{nome_garanhao}" class="form-control"
 							th:readonly="${usuario.tipo != 'ADMIN'}" />
 					</div>
+					
 					<div class="col-12 col-md-6">
-
-						<label for="CorPalhetaSelect">Cor da Palheta</label>
-						<select id="CorPalhetaSelect" required th:field="*{cor_palheta}" class="form-control select2"
-							th:attr="disabled=${usuario.tipo != 'ADMIN'}">
-							<option value="">Escolha uma cor</option>
-							<option value="Laranja">Laranja</option>
-							<option value="Roxo">Roxo</option>
-							<option value="Vermelho">Vermelho</option>
-							<option value="Branco">Branco</option>
-							<option value="Cinza">Cinza</option>
-							<option value="Rosa">Rosa</option>
-							<option value="Amarelo">Amarelo</option>
-							<option value="Azul">Azul</option>
-							<option value="Preto">Preto</option>
-						</select>
-
+					    <label for="CorPalhetaSelect">Cor da Palheta</label>
+						<select id="CorPalhetaSelect"
+						    th:data-cor-garanhao="${garanhao.cor_palheta}"
+						    required th:field="*{cor_palheta}" 
+						    class="form-control select2"
+						    onchange="gerenciarCores(this)" 
+						    th:attr="disabled=${usuario.tipo != 'ADMIN'}">
+					        <option value="">Escolha uma cor</option>
+					        <option value="adicionar">+ Adicionar nova cor</option>
+					        <option value="excluir">🗑️ Excluir uma cor</option>
+					    </select>
 					</div>
+
 
 				</div>
 
@@ -658,7 +655,123 @@
 			console.log("Uso Interno:", usoInterno);
 			console.log("Transferência:", transferencia);
 		}
+		
+		document.addEventListener('DOMContentLoaded', function () {
+		    const select = document.getElementById('CorPalhetaSelect');
+		    const coresSalvas = JSON.parse(localStorage.getItem('coresPersonalizadas')) || [];
+		    
+		    // 1. Adiciona as cores salvas do localStorage ao select, se ainda não existirem.
+		    coresSalvas.forEach(cor => {
+		        if (![...select.options].some(option => option.value.toLowerCase() === cor.toLowerCase())) {
+		            // Inserir logo após a primeira opção ("Escolha uma cor")
+		            const novaOpcao = document.createElement('option');
+		            novaOpcao.value = cor;
+		            novaOpcao.text = cor;
+		            select.insertBefore(novaOpcao, select.options[1]);
+		        }
+		    });
+		    
+		    // 2. Pega a cor do garanhão (do banco) a partir do atributo data
+		    const corDoGaranhao = select.getAttribute('data-cor-garanhao');
+		    
+		    if (corDoGaranhao && corDoGaranhao.trim() !== "") {
+		        // Se essa cor não existir ainda no select, adiciona antes da opção "adicionar"
+		        if (![...select.options].some(option => option.value === corDoGaranhao)) {
+		            // Procura a posição da opção "adicionar"
+		            const indexAdicionar = [...select.options].findIndex(option => option.value === "adicionar");
+		            const novaOpcao = document.createElement('option');
+		            novaOpcao.value = corDoGaranhao;
+		            novaOpcao.text = corDoGaranhao;
+		            if (indexAdicionar !== -1) {
+		                select.insertBefore(novaOpcao, select.options[indexAdicionar]);
+		            } else {
+		                select.appendChild(novaOpcao);
+		            }
+		        }
+		        // Define o valor do select como a cor do garanhão
+		        select.value = corDoGaranhao;
+		    } else {
+		        // Se não houver cor no banco, usa o valor do localStorage (se houver)
+		        const corSelecionada = localStorage.getItem('corSelecionada');
+		        if (corSelecionada && corSelecionada.trim() !== "") {
+		            select.value = corSelecionada;
+		        }
+		    }
+		});
 
+		function gerenciarCores(select) {
+		    if (select.value === 'adicionar') {
+		        adicionarCor(select);
+		    } else if (select.value === 'excluir') {
+		        excluirCor(select);
+		    } else {
+		        // Atualiza o localStorage somente se não estivermos na tela de edição com cor definida no banco
+		        // (ou seja, se o atributo data-cor-garanhao estiver vazio)
+		        const corDoGaranhao = select.getAttribute('data-cor-garanhao');
+		        if (!corDoGaranhao || corDoGaranhao.trim() === "") {
+		            localStorage.setItem('corSelecionada', select.value);
+		        }
+		    }
+		}
+
+		function adicionarCor(select) {
+		    const novaCor = prompt('Digite o nome da nova cor:');
+		    if (novaCor && novaCor.trim() !== '') {
+		        const corFormatada = novaCor.trim();
+		        const existe = Array.from(select.options).some(option => option.value.toLowerCase() === corFormatada.toLowerCase());
+		        if (!existe) {
+		            const novaOpcao = document.createElement('option');
+		            novaOpcao.value = corFormatada;
+		            novaOpcao.text = corFormatada;
+		            // Insere antes da opção "adicionar" (se possível)
+		            const indexAdicionar = [...select.options].findIndex(option => option.value === "adicionar");
+		            if (indexAdicionar !== -1) {
+		                select.insertBefore(novaOpcao, select.options[indexAdicionar]);
+		            } else {
+		                select.appendChild(novaOpcao);
+		            }
+		            // Atualiza o localStorage com a nova cor
+		            let coresSalvas = JSON.parse(localStorage.getItem('coresPersonalizadas')) || [];
+		            coresSalvas.push(corFormatada);
+		            localStorage.setItem('coresPersonalizadas', JSON.stringify(coresSalvas));
+		            select.value = corFormatada;
+		            localStorage.setItem('corSelecionada', corFormatada);
+		        } else {
+		            alert('Essa cor já está na lista.');
+		            select.value = '';
+		        }
+		    } else {
+		        select.value = '';
+		    }
+		}
+
+		function excluirCor(select) {
+		    const coresSalvas = JSON.parse(localStorage.getItem('coresPersonalizadas')) || [];
+		    if (coresSalvas.length === 0) {
+		        alert('Não há cores personalizadas para excluir.');
+		        select.value = '';
+		        return;
+		    }
+		    const corParaExcluir = prompt(`Qual cor deseja excluir?\n${coresSalvas.join(', ')}`);
+		    if (corParaExcluir && coresSalvas.includes(corParaExcluir)) {
+		        Array.from(select.options).forEach(option => {
+		            if (option.value === corParaExcluir) {
+		                select.removeChild(option);
+		            }
+		        });
+		        const novasCores = coresSalvas.filter(cor => cor !== corParaExcluir);
+		        localStorage.setItem('coresPersonalizadas', JSON.stringify(novasCores));
+		        if (localStorage.getItem('corSelecionada') === corParaExcluir) {
+		            localStorage.removeItem('corSelecionada');
+		            select.value = '';
+		        }
+		        alert(`A cor "${corParaExcluir}" foi excluída com sucesso.`);
+		    } else if (corParaExcluir) {
+		        alert('Cor não encontrada.');
+		    }
+		    select.value = '';
+		}
+		
 		// Função para imprimir o formulário
 		function imprimirFormulario() {
 			const nomeGaranhao = document.getElementById('nome_garanhao').value;

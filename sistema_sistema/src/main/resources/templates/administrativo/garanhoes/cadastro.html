@@ -369,18 +369,12 @@
 						<input type="text" required th:field="*{nome_garanhao}" class="form-control" placeholder="Nome do garanhão"/>
 					</div>
 					<div class="col-md-6 mb-3">
-						<label for="CorPalhetaSelect">Cor da Palheta</label>
-						<select id="CorPalhetaSelect" required th:field="*{cor_palheta}" class="form-control select2">
-							<option value="">Escolha uma cor</option>
-							<option value="Laranja">Laranja</option>
-							<option value="Roxo">Roxo</option>
-							<option value="Vermelho">Vermelho</option>
-							<option value="Branco">Branco</option>
-							<option value="Cinza">Cinza</option>
-							<option value="Rosa">Rosa</option>
-							<option value="Amarelo">Amarelo</option>
-							<option value="Azul">Azul</option>
-						</select>
+					    <label for="CorPalhetaSelect">Cor da Palheta</label>
+					    <select id="CorPalhetaSelect" required th:field="*{cor_palheta}" class="form-control select2" onchange="gerenciarCores(this)">
+					        <option value="">Escolha uma cor</option>
+					        <option value="adicionar">+ Adicionar nova cor</option>
+					        <option value="excluir">🗑️ Excluir uma cor</option>
+					    </select>
 					</div>
 
 					<div class="col-md-6 mb-3">
@@ -540,6 +534,96 @@
 				}
 			});
 		}
+		
+		// Carrega as cores salvas no localStorage ao abrir a página
+		    window.onload = function() {
+		        const select = document.getElementById('CorPalhetaSelect');
+		        const coresSalvas = JSON.parse(localStorage.getItem('coresPersonalizadas')) || [];
+
+		        coresSalvas.forEach(cor => {
+		            if (![...select.options].some(option => option.value.toLowerCase() === cor.toLowerCase())) {
+		                const novaOpcao = document.createElement('option');
+		                novaOpcao.value = cor;
+		                novaOpcao.text = cor;
+		                select.insertBefore(novaOpcao, select.options[select.options.length - 2]); // Antes da opção "Excluir"
+		            }
+		        });
+		    };
+
+		    // Função para gerenciar adição e exclusão de cores
+		    function gerenciarCores(select) {
+		        if (select.value === 'adicionar') {
+		            adicionarCor(select);
+		        } else if (select.value === 'excluir') {
+		            excluirCor(select);
+		        }
+		    }
+
+		    // Adiciona nova cor e salva no localStorage
+		    function adicionarCor(select) {
+		        const novaCor = prompt('Digite o nome da nova cor:');
+
+		        if (novaCor && novaCor.trim() !== '') {
+		            const corFormatada = novaCor.trim();
+
+		            // Verifica se a cor já existe
+		            const existe = Array.from(select.options).some(option => option.value.toLowerCase() === corFormatada.toLowerCase());
+
+		            if (!existe) {
+		                const novaOpcao = document.createElement('option');
+		                novaOpcao.value = corFormatada;
+		                novaOpcao.text = corFormatada;
+
+		                // Adiciona antes da opção "Adicionar nova cor"
+		                select.insertBefore(novaOpcao, select.options[select.options.length - 2]);
+
+		                // Salva no localStorage
+		                let coresSalvas = JSON.parse(localStorage.getItem('coresPersonalizadas')) || [];
+		                coresSalvas.push(corFormatada);
+		                localStorage.setItem('coresPersonalizadas', JSON.stringify(coresSalvas));
+
+		                // Seleciona a nova cor
+		                select.value = corFormatada;
+		            } else {
+		                alert('Essa cor já está na lista.');
+		                select.value = '';
+		            }
+		        } else {
+		            select.value = '';
+		        }
+		    }
+
+		    // Exclui uma cor existente
+		    function excluirCor(select) {
+		        const coresSalvas = JSON.parse(localStorage.getItem('coresPersonalizadas')) || [];
+		        
+		        if (coresSalvas.length === 0) {
+		            alert('Não há cores personalizadas para excluir.');
+		            select.value = '';
+		            return;
+		        }
+
+		        const corParaExcluir = prompt(`Qual cor deseja excluir?\n${coresSalvas.join(', ')}`);
+
+		        if (corParaExcluir && coresSalvas.includes(corParaExcluir)) {
+		            // Remove do select
+		            Array.from(select.options).forEach(option => {
+		                if (option.value === corParaExcluir) {
+		                    select.removeChild(option);
+		                }
+		            });
+
+		            // Remove do localStorage
+		            const novasCores = coresSalvas.filter(cor => cor !== corParaExcluir);
+		            localStorage.setItem('coresPersonalizadas', JSON.stringify(novasCores));
+
+		            alert(`A cor "${corParaExcluir}" foi excluída com sucesso.`);
+		        } else if (corParaExcluir) {
+		            alert('Cor não encontrada.');
+		        }
+
+		        select.value = '';
+		    }
 
 		// Função para inicializar todas as funcionalidades
 		function inicializar() {
