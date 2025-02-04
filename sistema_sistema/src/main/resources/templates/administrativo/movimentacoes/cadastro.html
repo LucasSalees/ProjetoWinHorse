@@ -457,7 +457,7 @@
 					            Restam <span required id="saldo-atual-palhetas">0</span> palhetas
 					        </div>
 					    </div>
-					    <input type="number" required id="quantidade" th:field="*{quantidade}" class="form-control" />
+					    <input type="number" required id="quantidade" th:field="*{quantidade}" class="form-control" min="1"/>
 					</div>
 
 
@@ -572,18 +572,6 @@
 			$("#botijao, #caneca, #cor_palheta").val("");
 			$("#saldo-atual-palhetas").text("0");
 			$("#quantidade").attr('max', 0);
-		}
-
-		// Função para validar o valor digitado no campo de quantidade
-		function validarQuantidade() {
-			const quantidadeInput = document.getElementById('quantidade');
-			quantidadeInput.addEventListener('input', (event) => {
-				const valorDigitado = parseInt(event.target.value, 10) || 0;
-				if (valorDigitado < 0) {
-					event.target.value = 0;
-					alert('O valor não pode ser menor que 1.');
-				}
-			});
 		}
 
 		// Função para atualizar o valor máximo permitido no campo de quantidade

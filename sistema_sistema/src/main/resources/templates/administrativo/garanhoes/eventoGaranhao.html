@@ -406,7 +406,7 @@
 						    th:attr="disabled=${usuario.tipo != 'ADMIN'}">
 					        <option value="">Escolha uma cor</option>
 					        <option value="adicionar">+ Adicionar nova cor</option>
-					        <option value="excluir">🗑️ Excluir uma cor</option>
+					         <option value="excluir">🗑️ Excluir uma cor</option>
 					    </select>
 					</div>
 
@@ -456,10 +456,11 @@
 
 				<div class="form-row">
 					<div class="col-12 col-md-6">
-						<label for="caneca" class="label-info">Número da Caneca</label>
-						<input type="number" required id="caneca" th:field="*{caneca}" class="form-control"
-							th:readonly="${usuario.tipo != 'ADMIN'}" />
+					    <label for="caneca" class="label-info">Número da Caneca</label>
+					    <input type="number" required id="caneca" th:field="*{caneca}" class="form-control"
+					        th:readonly="${usuario.tipo != 'ADMIN'}" min="1" />
 					</div>
+
 					<div class="col-12 col-md-6">
 						<label for="data_cadastro" class="label-info">Data do cadastro</label>
 						<input type="text" th:field="*{data_cadastro}"
@@ -469,11 +470,12 @@
 				</div>
 
 				<div class="form-row">
-					<div class="col-12 col-md-6">
-						<label for="saldo_inicial_palhetas" class="label-info">Saldo Inicial de Palhetas</label>
-						<input type="number" id="saldo_inicial_palhetas" th:field="*{saldo_inicial_palhetas}"
-							class="form-control" th:readonly="${usuario.tipo != 'ADMIN'}" />
-					</div>
+				    <div class="col-12 col-md-6">
+				        <label for="saldo_inicial_palhetas" class="label-info">Saldo Inicial de Palhetas</label>
+				        <input type="number" id="saldo_inicial_palhetas" th:field="*{saldo_inicial_palhetas}"
+				            class="form-control" th:readonly="${usuario.tipo != 'ADMIN'}" min="1" />
+				    </div>
+
 					<div class="col-12 col-md-6">
 
 						<label for="saldo_atual_palhetas" class="label-info">Saldo atual de Palhetas</label>
@@ -566,6 +568,22 @@
 				}
 			});
 		}
+		
+		document.getElementById("saldo_inicial_palhetas").addEventListener("input", function (event) {
+		    const input = event.target;
+		    if (input.value < 0) {
+		        input.value = 0; // Define o valor para 0 se o número for negativo
+		        alert("Números negativos não são permitidos.");
+		    }
+		});
+			
+		document.getElementById("caneca").addEventListener("input", function (event) {
+	        const input = event.target;
+	        if (input.value < 0) {
+	            input.value = 0; // Corrige o valor para 0 se for negativo
+	            alert("Números negativos não são permitidos.");
+	        }
+	    });
 
 		// Função para buscar os dados do garanhão selecionado via AJAX
 		function buscarDadosGaranhao(idGaranhao) {

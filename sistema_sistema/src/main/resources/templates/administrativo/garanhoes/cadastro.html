@@ -416,15 +416,16 @@
 					</div>
 
 					<div class="col-md-6 mb-3">
-						<label>Caneca</label>
-						<input type="number" required th:field="*{caneca}" class="form-control" />
+					    <label>Número da Caneca</label>
+					    <input type="number" required th:field="*{caneca}" class="form-control" id="caneca" min="1" />
 					</div>
+
 					<div class="col-md-6 mb-3">
 						<input type="hidden" th:field="*{saldo_atual_palhetas}" class="form-control" />
 					</div>
 					<div class="col-md-6 mb-3">
 						<label>Saldo Inicial de Palhetas</label>
-						<input type="number" required th:field="*{saldo_inicial_palhetas}" class="form-control" />
+						<input type="number" required th:field="*{saldo_inicial_palhetas}" class="form-control" id="saldo_inicial_palhetas" min="1"/>
 					</div>
 					<div class="col-md-6 mb-3">
 						<input type="hidden" required readonly="true" th:field="*{data_cadastro}"
@@ -471,6 +472,22 @@
 	            dropdownParent: $('body') // Garante que abra para baixo
 	        });
 	    });
+		
+		document.getElementById("saldo_inicial_palhetas").addEventListener("input", function (event) {
+	        const input = event.target;
+	        if (input.value < 0) {
+	            input.value = 0; // Define o valor para 0 se o número for negativo
+	            alert("Números negativos não são permitidos.");
+	        }
+	    });
+			
+		document.getElementById("caneca").addEventListener("input", function (event) {
+	        const input = event.target;
+	        if (input.value < 0) {
+	            input.value = 0; // Define o valor para 0 se o número for negativo
+	            alert("Números negativos não são permitidos.");
+	        }
+	    });
 
 		// Função para atualizar a data e hora
 		function atualizarHorario() {
@@ -494,32 +511,6 @@
 			setInterval(atualizarHorario, 1000);
 			// Preenche o campo com a hora atual ao carregar a página
 			atualizarHorario();
-		}
-
-		// Função para validar o campo "Botijão"
-		function validarBotijao() {
-			const botijaoInput = document.getElementById('botijao');
-			botijaoInput.addEventListener('input', (event) => {
-				const valorDigitado = parseInt(event.target.value, 10);
-
-				if (valorDigitado < 0) {
-					event.target.value = 0; // Ajusta automaticamente para 0
-					alert('O valor do botijão não pode ser negativo.');
-				}
-			});
-		}
-
-		// Função para validar o campo "Caneca"
-		function validarCaneca() {
-			const canecaInput = document.getElementById('caneca');
-			canecaInput.addEventListener('input', (event) => {
-				const valorDigitado = parseInt(event.target.value, 10);
-
-				if (valorDigitado < 0) {
-					event.target.value = 0; // Ajusta automaticamente para 0
-					alert('O valor da caneca não pode ser negativo.');
-				}
-			});
 		}
 
 		// Função para validar o campo "Saldo Inicial de Palhetas"
