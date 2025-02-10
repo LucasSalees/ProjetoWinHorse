@@ -155,8 +155,8 @@
 			color: #cf8311;
 			text-decoration: none;
 		}
-		
-		.dropdown{
+
+		.dropdown {
 			font-family: "Asar", Sans-serif;
 		}
 
@@ -291,6 +291,84 @@
 			width: 100%;
 			text-align: center;
 		}
+
+		/*modal*/
+		.fechar-modal {
+			background: none;
+			/* Remove qualquer fundo */
+			border: none;
+			/* Remove a borda */
+			box-shadow: none;
+			/* Remove sombras ao focar */
+			padding: 0;
+			/* Remove o espaçamento interno */
+			cursor: pointer;
+			/* Mantém o cursor como ponteiro */
+		}
+
+		.fechar-modal i {
+			font-size: 2rem;
+			/* Ajuste o tamanho */
+			color: #ff0000;
+			/* Mantém a cor vermelha */
+		}
+
+		/* Fundo do modal semi-transparente */
+		.modal-content {
+			background: rgba(255, 255, 255, 0.95);
+			border-radius: 10px;
+			box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+		}
+
+		/* Estilização do título */
+		.modal-title {
+			font-weight: bold;
+			color: #ff0000;
+			/* Vermelho do Bootstrap */
+		}
+
+		/* Botão de fechar sem fundo e com hover */
+		.fechar-modal {
+			background: none;
+			border: none;
+			box-shadow: none;
+			padding: 0;
+			cursor: pointer;
+		}
+
+		.fechar-modal i {
+			font-size: 2rem;
+			color: #ff0000;
+			/* Vermelho */
+			transition: 0.3s;
+		}
+
+		/* Efeito ao passar o mouse no botão de fechar */
+		.fechar-modal i:hover {
+			color: #B22222;
+			/* Vermelho mais escuro */
+			transform: scale(1.2);
+		}
+
+		/* Corpo do modal estilizado */
+		.modal-body {
+			text-align: center;
+			font-size: 1.2rem;
+			font-weight: 500;
+		}
+
+		/* Texto do aviso maior e centralizado */
+		h5 {
+			font-size: 1.8rem;
+			/* Aumenta o tamanho do texto */
+			font-weight: bold;
+			color: #d9534f;
+			/* Vermelho Bootstrap */
+			text-align: center;
+			/* Centraliza o texto */
+			width: 100%;
+			/* Garante que o alinhamento funcione */
+		}
 	</style>
 
 </head>
@@ -302,7 +380,8 @@
 		<div class="container">
 			<!-- Logo à esquerda -->
 			<a class="navbar-brand" href="/home">
-				<img src="https://www.harasrosamystica.com.br/wp-content/uploads/2024/07/logo-header-novo.webp" alt="Logo Haras Rosa Mystica">
+				<img src="https://www.harasrosamystica.com.br/wp-content/uploads/2024/07/logo-header-novo.webp"
+					alt="Logo Haras Rosa Mystica">
 			</a>
 
 			<!-- Botão do menu responsivo -->
@@ -323,15 +402,15 @@
 					</a>
 
 					<div class="dropdown-menu dropdown-menu-left" style="width: 250px; background-color: #363636;">
-						
+
 						<a class="dropdown-item" href="/administrativo/usuarios/perfil"
 							style="display: flex; align-items: center; justify-content: space-between;">
-							
+
 							<span th:text="${usuario.nome_usuario}" style="border: 2px solid #ccc; padding: 5px 10px; border-radius: 5px; cursor: pointer; 
 				                         transition: all 0.3s ease; display: inline-block;">
 							</span>
 
-							
+
 							<i class="fa-solid fa-circle"
 								style="color: #00ff00; font-size: 12px; margin-left: 15px;"></i>
 						</a>
@@ -343,19 +422,18 @@
 				                        cursor: pointer; transition: all 0.3s ease;">
 								Administrador
 							</span>
-							
+
 							<i class="fa-solid fa-circle"
 								style="color: #363636; font-size: 12px; margin-left: 15px;"></i>
 						</a>
-						<a class="dropdown-item"
-						   href="/ajuda"
-						   style="display: flex; align-items: center; justify-content: space-between;">
-						   <span style="border: 2px solid #ccc; padding: 5px 10px; border-radius: 5px; 
+						<a class="dropdown-item" href="/ajuda"
+							style="display: flex; align-items: center; justify-content: space-between;">
+							<span style="border: 2px solid #ccc; padding: 5px 10px; border-radius: 5px; 
 						               cursor: pointer; transition: all 0.3s ease;">
-						       Manual
-						   </span>
-						   <i class="fa-solid fa-circle"
-						      style="color: #363636; font-size: 12px; margin-left: 15px;"></i>
+								Manual
+							</span>
+							<i class="fa-solid fa-circle"
+								style="color: #363636; font-size: 12px; margin-left: 15px;"></i>
 						</a>
 					</div>
 				</div>
@@ -418,7 +496,7 @@
 						<div class="col-md-6 mb-3">
 							<label>Senha</label>
 							<input type="text" th:field="*{senha}" placeholder="Senha do Usuário" class="form-control"
-								required maxlength="15"/>
+								required maxlength="15" />
 						</div>
 						<div class="col-md-6 mb-3">
 							<label>Endereço</label>
@@ -450,10 +528,33 @@
 
 					<div class="custom-divider"></div>
 
+					<!-- Modal de Confirmação de Exclusão -->
+					<div class="modal fade" id="exclusaoModal" tabindex="-1" aria-labelledby="exclusaoModalLabel"
+						aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="exclusaoModalLabel">Confirmação</h5>
+									<button type="button" class="fechar-modal" data-bs-dismiss="modal"
+										aria-label="Fechar">
+										<i class="fa-solid fa-circle-xmark"></i>
+									</button>
+								</div>
+								<div class="modal-body">
+									<p>Tem certeza que deseja excluir este usuário?</p>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary"
+										data-bs-dismiss="modal">Cancelar</button>
+									<a id="confirmarExclusaoBtn" class="btn btn-danger">Excluir</a>
+								</div>
+							</div>
+						</div>
+					</div>
+
 					<div class="d-flex justify-content-between mt-3">
 						<a th:href="@{/removerUsuario/{id_usuario}(id_usuario=${usuario.id_usuario})}"
-							class="btn btn-danger btn-sm"
-							onclick="return confirm('Tem certeza que deseja excluir este usuário?');">
+							class="btn btn-danger btn-sm" onclick="openExclusaoModal(this); return false;">
 							<i class="fa-solid fa-trash" style="color: #ffffff;"></i> Excluir
 						</a>
 
@@ -471,27 +572,30 @@
 
 	<div class="watermark">LucasSales@2024</div>
 
+	<!-- Bootstrap JS (Necessário para o modal funcionar) -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 	<script>
 
 		// Função para ajustar o e-mail antes de salvar
 		function atualizarEmail() {
-		        const emailInput = document.getElementById("email");
-		        const dominio = "@haras.com";
+			const emailInput = document.getElementById("email");
+			const dominio = "@haras.com";
 
-		        // Se o domínio já estiver no valor, extrai apenas a parte antes dele
-		        if (emailInput.value.includes(dominio)) {
-		            emailInput.value = emailInput.value.split(dominio)[0]; 
-		        }
+			// Se o domínio já estiver no valor, extrai apenas a parte antes dele
+			if (emailInput.value.includes(dominio)) {
+				emailInput.value = emailInput.value.split(dominio)[0];
+			}
 
-		        // Limita o nome do usuário a 20 caracteres
-		        let parteUsuario = emailInput.value.slice(0, 20);
+			// Limita o nome do usuário a 20 caracteres
+			let parteUsuario = emailInput.value.slice(0, 20);
 
-		        // Atualiza o campo com a parte do usuário + domínio
-		        emailInput.value = parteUsuario + dominio;
+			// Atualiza o campo com a parte do usuário + domínio
+			emailInput.value = parteUsuario + dominio;
 
-		        // Mantém o cursor no local correto (antes do domínio)
-		        emailInput.setSelectionRange(parteUsuario.length, parteUsuario.length);
-		    }
+			// Mantém o cursor no local correto (antes do domínio)
+			emailInput.setSelectionRange(parteUsuario.length, parteUsuario.length);
+		}
 
 		// Listener para ajustar o e-mail ao enviar o formulário
 		document.querySelector("form").addEventListener("submit", function (event) {
@@ -554,6 +658,17 @@
 				$(this).val(valor);
 			});
 		});
+
+		function openExclusaoModal(link) {
+			// Exibe o modal de confirmação
+			const modal = new bootstrap.Modal(document.getElementById('exclusaoModal'));
+			modal.show();
+
+			// Define a ação do botão "Excluir" dentro do modal para seguir o href original
+			document.getElementById('confirmarExclusaoBtn').onclick = function () {
+				window.location.href = link.href;
+			};
+		}
 
 		function imprimirFormulario() {
 			// Captura os valores dos campos do formulário
@@ -767,7 +882,7 @@
 		}
 
 	</script>
-	
+
 </body>
 
 </html>

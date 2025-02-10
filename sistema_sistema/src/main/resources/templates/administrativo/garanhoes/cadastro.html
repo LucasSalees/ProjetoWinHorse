@@ -4,7 +4,8 @@
 <head>
 
 	<meta charset="utf-8"> <!-- Define a codificação de caracteres como UTF-8, suportando caracteres especiais -->
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <!-- Configura a página para ser responsiva em dispositivos móveis -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!-- Configura a página para ser responsiva em dispositivos móveis -->
 
 	<!-- Estilos e fontes -->
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
@@ -26,11 +27,11 @@
 		type="image/x-icon">
 
 	<style>
-		
 		body {
 			font-family: "Asar", Sans-serif;
 			background-color: #C0C0C0;
-		}		
+		}
+
 		/*marca d'agua*/
 		.watermark {
 			position: fixed;
@@ -136,8 +137,8 @@
 			color: #cf8311;
 			text-decoration: none;
 		}
-		
-		.dropdown{
+
+		.dropdown {
 			font-family: "Asar", Sans-serif;
 		}
 
@@ -272,9 +273,86 @@
 			width: 100%;
 			text-align: center;
 		}
-		
+
+		/*modal*/
+		.fechar-modal {
+			background: none;
+			/* Remove qualquer fundo */
+			border: none;
+			/* Remove a borda */
+			box-shadow: none;
+			/* Remove sombras ao focar */
+			padding: 0;
+			/* Remove o espaçamento interno */
+			cursor: pointer;
+			/* Mantém o cursor como ponteiro */
+		}
+
+		.fechar-modal i {
+			font-size: 2rem;
+			/* Ajuste o tamanho */
+			color: #ff0000;
+			/* Mantém a cor vermelha */
+		}
+
+		/* Fundo do modal semi-transparente */
+		.modal-content {
+			background: rgba(255, 255, 255, 0.95);
+			border-radius: 10px;
+			box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+		}
+
+		/* Estilização do título */
+		.modal-title {
+			font-weight: bold;
+			color: #ff0000;
+			/* Vermelho do Bootstrap */
+		}
+
+		/* Botão de fechar sem fundo e com hover */
+		.fechar-modal {
+			background: none;
+			border: none;
+			box-shadow: none;
+			padding: 0;
+			cursor: pointer;
+		}
+
+		.fechar-modal i {
+			font-size: 2rem;
+			color: #ff0000;
+			/* Vermelho */
+			transition: 0.3s;
+		}
+
+		/* Efeito ao passar o mouse no botão de fechar */
+		.fechar-modal i:hover {
+			color: #B22222;
+			/* Vermelho mais escuro */
+			transform: scale(1.2);
+		}
+
+		/* Corpo do modal estilizado */
+		.modal-body {
+			text-align: center;
+			font-size: 1.2rem;
+			font-weight: 500;
+		}
+
+		/* Texto do aviso maior e centralizado */
+		h5 {
+			font-size: 1.8rem;
+			/* Aumenta o tamanho do texto */
+			font-weight: bold;
+			color: #d9534f;
+			/* Vermelho Bootstrap */
+			text-align: center;
+			/* Centraliza o texto */
+			width: 100%;
+			/* Garante que o alinhamento funcione */
+		}
 	</style>
-	
+
 </head>
 
 <body>
@@ -284,7 +362,8 @@
 		<div class="container">
 			<!-- Logo à esquerda -->
 			<a class="navbar-brand" href="/home">
-				<img src="https://www.harasrosamystica.com.br/wp-content/uploads/2024/07/logo-header-novo.webp" alt="Logo Haras Rosa Mystica">
+				<img src="https://www.harasrosamystica.com.br/wp-content/uploads/2024/07/logo-header-novo.webp"
+					alt="Logo Haras Rosa Mystica">
 			</a>
 
 			<!-- Botão do menu responsivo -->
@@ -305,15 +384,15 @@
 					</a>
 
 					<div class="dropdown-menu dropdown-menu-left" style="width: 250px; background-color: #363636;">
-						
+
 						<a class="dropdown-item" href="/administrativo/usuarios/perfil"
 							style="display: flex; align-items: center; justify-content: space-between;">
-							
+
 							<span th:text="${usuario.nome_usuario}" style="border: 2px solid #ccc; padding: 5px 10px; border-radius: 5px; cursor: pointer; 
 				                         transition: all 0.3s ease; display: inline-block;">
 							</span>
 
-							
+
 							<i class="fa-solid fa-circle"
 								style="color: #00ff00; font-size: 12px; margin-left: 15px;"></i>
 						</a>
@@ -325,19 +404,18 @@
 				                        cursor: pointer; transition: all 0.3s ease;">
 								Administrador
 							</span>
-							
+
 							<i class="fa-solid fa-circle"
 								style="color: #363636; font-size: 12px; margin-left: 15px;"></i>
 						</a>
-						<a class="dropdown-item"
-						   href="/ajuda"
-						   style="display: flex; align-items: center; justify-content: space-between;">
-						   <span style="border: 2px solid #ccc; padding: 5px 10px; border-radius: 5px; 
+						<a class="dropdown-item" href="/ajuda"
+							style="display: flex; align-items: center; justify-content: space-between;">
+							<span style="border: 2px solid #ccc; padding: 5px 10px; border-radius: 5px; 
 						               cursor: pointer; transition: all 0.3s ease;">
-						       Manual
-						   </span>
-						   <i class="fa-solid fa-circle"
-						      style="color: #363636; font-size: 12px; margin-left: 15px;"></i>
+								Manual
+							</span>
+							<i class="fa-solid fa-circle"
+								style="color: #363636; font-size: 12px; margin-left: 15px;"></i>
 						</a>
 					</div>
 				</div>
@@ -349,7 +427,7 @@
 			</div>
 		</div>
 	</nav>
-	
+
 	<div class="container d-flex justify-content-center align-items-center">
 		<div class="form-container" style="width: 800px; max-width: 900px;">
 			<form action="/administrativo/garanhoes/salvar" th:object="${garanhao}" method="POST">
@@ -365,67 +443,111 @@
 				<div class="row">
 					<div class="col-md-6 mb-3">
 						<label>Nome do Garanhão</label>
-						<input type="text" required th:field="*{nome_garanhao}" class="form-control" placeholder="Nome do garanhão"/>
+						<input type="text" required th:field="*{nome_garanhao}" class="form-control"
+							placeholder="Nome do garanhão" maxlength="40" />
 					</div>
 					<div class="col-md-6 mb-3">
-					    <label for="CorPalhetaSelect">Cor da Palheta</label>
-					    <select id="CorPalhetaSelect" required th:field="*{cor_palheta}" class="form-control select2" onchange="gerenciarCores(this)">
-					        <option value="">Escolha uma cor</option>
-					        <option value="adicionar">+ Adicionar nova cor</option>
-					        <option value="excluir">🗑️ Excluir uma cor</option>
-					    </select>
+						<label for="CorPalhetaSelect">Cor da Palheta</label>
+						<select id="CorPalhetaSelect" required th:field="*{cor_palheta}" class="form-control select2"
+							onchange="gerenciarCores(this)">
+							<option value="">Escolha uma cor</option>
+							<option value="adicionar">+ Adicionar nova cor</option>
+							<option value="excluir">🗑️ Excluir uma cor</option>
+						</select>
 					</div>
 
 					<div class="col-md-6 mb-3">
 						<label for="botijaoSelect">Letra do Botijão</label>
 						<select id="botijaoSelect" required th:field="*{botijao}" class="form-control select2">
-						    <option value="">Escolha uma letra</option>
-						    <option value="A">A</option>
-						    <option value="B">B</option>
-						    <option value="C">C</option>
-						    <option value="D">D</option>
-						    <option value="E">E</option>
-						    <option value="F">F</option>
-						    <option value="G">G</option>
-						    <option value="H">H</option>
-						    <option value="I">I</option>
-						    <option value="J">J</option>
-						    <option value="K">K</option>
-						    <option value="L">L</option>
-						    <option value="M">M</option>
-						    <option value="N">N</option>
-						    <option value="O">O</option>
-						    <option value="P">P</option>
-						    <option value="Q">Q</option>
-						    <option value="R">R</option>
-						    <option value="S">S</option>
-						    <option value="T">T</option>
-						    <option value="U">U</option>
-						    <option value="V">V</option>
-						    <option value="W">W</option>
-						    <option value="X">X</option>
-						    <option value="Y">Y</option>
-						    <option value="Z">Z</option>
+							<option value="">Escolha uma letra</option>
+							<option value="A">A</option>
+							<option value="B">B</option>
+							<option value="C">C</option>
+							<option value="D">D</option>
+							<option value="E">E</option>
+							<option value="F">F</option>
+							<option value="G">G</option>
+							<option value="H">H</option>
+							<option value="I">I</option>
+							<option value="J">J</option>
+							<option value="K">K</option>
+							<option value="L">L</option>
+							<option value="M">M</option>
+							<option value="N">N</option>
+							<option value="O">O</option>
+							<option value="P">P</option>
+							<option value="Q">Q</option>
+							<option value="R">R</option>
+							<option value="S">S</option>
+							<option value="T">T</option>
+							<option value="U">U</option>
+							<option value="V">V</option>
+							<option value="W">W</option>
+							<option value="X">X</option>
+							<option value="Y">Y</option>
+							<option value="Z">Z</option>
 						</select>
-					</div>
-					
-					<div class="col-md-6 mb-3">
-					    <label>Data da Contagem Inicial</label>
-					    <input type="date" required th:field="*{data_contagem_inicial}" class="form-control" />
 					</div>
 
 					<div class="col-md-6 mb-3">
-					    <label>Número da Caneca</label>
-					    <input type="number" required th:field="*{caneca}" class="form-control" id="caneca" min="1" />
+						<label>Data da Contagem Inicial</label>
+						<input type="date" required th:field="*{data_contagem_inicial}" class="form-control" />
+					</div>
+
+					<!-- Modal de Aviso -->
+					<div class="modal fade" id="canecaModal" tabindex="-1" aria-labelledby="canecaModalLabel"
+						aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="canecaModalLabel">Aviso</h5>
+									<button type="button" class="fechar-modal" data-bs-dismiss="modal"
+										aria-label="Fechar">
+										<i class="fa-solid fa-circle-xmark"></i>
+									</button>
+								</div>
+								<div class="modal-body">
+									<p>Números negativos não são permitidos.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Campo de entrada -->
+					<div class="col-md-6 mb-3">
+						<label>Número da Caneca</label>
+						<input type="number" required th:field="*{caneca}" class="form-control" id="caneca" min="1" />
 					</div>
 
 					<div class="col-md-6 mb-3">
 						<input type="hidden" th:field="*{saldo_atual_palhetas}" class="form-control" />
 					</div>
+
+					<!-- Modal de Aviso -->
+					<div class="modal fade" id="saldoInicialModal" tabindex="-1"
+						aria-labelledby="saldoInicialModalLabel" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="saldoInicialModalLabel">Aviso</h5>
+									<button type="button" class="fechar-modal" data-bs-dismiss="modal"
+										aria-label="Fechar">
+										<i class="fa-solid fa-circle-xmark"></i>
+									</button>
+								</div>
+								<div class="modal-body">
+									<p>Números negativos não são permitidos.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
 					<div class="col-md-6 mb-3">
 						<label>Saldo Inicial de Palhetas</label>
-						<input type="number" required th:field="*{saldo_inicial_palhetas}" class="form-control" id="saldo_inicial_palhetas" min="1"/>
+						<input type="number" required th:field="*{saldo_inicial_palhetas}" class="form-control"
+							id="saldo_inicial_palhetas" min="1" />
 					</div>
+
 					<div class="col-md-6 mb-3">
 						<input type="hidden" required readonly="true" th:field="*{data_cadastro}"
 							th:value="${#dates.format(data_cadastro, 'dd/MM/yyyy HH:mm:ss')}" class="form-control" />
@@ -448,45 +570,51 @@
 	</div>
 
 	<div class="watermark">LucasSales@2024</div>
-	
+
 	<!-- Importando Select2 -->
 	<link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
 	<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+	<!-- Bootstrap JS (Necessário para o modal funcionar) -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 
 	<script>
-		
+
 		$(document).ready(function () {
-	        $('#botijaoSelect').select2({
-	            dropdownAutoWidth: true,
-	            width: '100%',
-	            dropdownParent: $('body') // Garante que abra para baixo
-	        });
-	    });
-			
+			$('#botijaoSelect').select2({
+				dropdownAutoWidth: true,
+				width: '100%',
+				dropdownParent: $('body') // Garante que abra para baixo
+			});
+		});
+
 		$(document).ready(function () {
-	        $('#CorPalhetaSelect').select2({
-	            dropdownAutoWidth: true,
-	            width: '100%',
-	            dropdownParent: $('body') // Garante que abra para baixo
-	        });
-	    });
-		
+			$('#CorPalhetaSelect').select2({
+				dropdownAutoWidth: true,
+				width: '100%',
+				dropdownParent: $('body') // Garante que abra para baixo
+			});
+		});
+
 		document.getElementById("saldo_inicial_palhetas").addEventListener("input", function (event) {
-	        const input = event.target;
-	        if (input.value < 0) {
-	            input.value = 0; // Define o valor para 0 se o número for negativo
-	            alert("Números negativos não são permitidos.");
-	        }
-	    });
-			
+			const input = event.target;
+			if (input.value < 0) {
+				input.value = "0"; // substitui o valor negativo para 0
+				let modal = new bootstrap.Modal(document.getElementById("saldoInicialModal")); // Instancia o modal
+				modal.show(); // Exibe o modal
+			}
+		});
+
 		document.getElementById("caneca").addEventListener("input", function (event) {
-	        const input = event.target;
-	        if (input.value < 0) {
-	            input.value = 0; // Define o valor para 0 se o número for negativo
-	            alert("Números negativos não são permitidos.");
-	        }
-	    });
+			const input = event.target;
+			if (input.value < 0) {
+				input.value = "0"; // substitui o valor negativo para 0
+				let modal = new bootstrap.Modal(document.getElementById("canecaModal")); // Instancia o modal
+				modal.show(); // Exibe o modal
+			}
+		});
+
 
 		// Função para atualizar a data e hora
 		function atualizarHorario() {
@@ -524,96 +652,96 @@
 				}
 			});
 		}
-		
+
 		// Carrega as cores salvas no localStorage ao abrir a página
-		    window.onload = function() {
-		        const select = document.getElementById('CorPalhetaSelect');
-		        const coresSalvas = JSON.parse(localStorage.getItem('coresPersonalizadas')) || [];
+		window.onload = function () {
+			const select = document.getElementById('CorPalhetaSelect');
+			const coresSalvas = JSON.parse(localStorage.getItem('coresPersonalizadas')) || [];
 
-		        coresSalvas.forEach(cor => {
-		            if (![...select.options].some(option => option.value.toLowerCase() === cor.toLowerCase())) {
-		                const novaOpcao = document.createElement('option');
-		                novaOpcao.value = cor;
-		                novaOpcao.text = cor;
-		                select.insertBefore(novaOpcao, select.options[select.options.length - 2]); // Antes da opção "Excluir"
-		            }
-		        });
-		    };
+			coresSalvas.forEach(cor => {
+				if (![...select.options].some(option => option.value.toLowerCase() === cor.toLowerCase())) {
+					const novaOpcao = document.createElement('option');
+					novaOpcao.value = cor;
+					novaOpcao.text = cor;
+					select.insertBefore(novaOpcao, select.options[select.options.length - 2]); // Antes da opção "Excluir"
+				}
+			});
+		};
 
-		    // Função para gerenciar adição e exclusão de cores
-		    function gerenciarCores(select) {
-		        if (select.value === 'adicionar') {
-		            adicionarCor(select);
-		        } else if (select.value === 'excluir') {
-		            excluirCor(select);
-		        }
-		    }
+		// Função para gerenciar adição e exclusão de cores
+		function gerenciarCores(select) {
+			if (select.value === 'adicionar') {
+				adicionarCor(select);
+			} else if (select.value === 'excluir') {
+				excluirCor(select);
+			}
+		}
 
-		    // Adiciona nova cor e salva no localStorage
-		    function adicionarCor(select) {
-		        const novaCor = prompt('Digite o nome da nova cor:');
+		// Adiciona nova cor e salva no localStorage
+		function adicionarCor(select) {
+			const novaCor = prompt('Digite o nome da nova cor:');
 
-		        if (novaCor && novaCor.trim() !== '') {
-		            const corFormatada = novaCor.trim();
+			if (novaCor && novaCor.trim() !== '') {
+				const corFormatada = novaCor.trim();
 
-		            // Verifica se a cor já existe
-		            const existe = Array.from(select.options).some(option => option.value.toLowerCase() === corFormatada.toLowerCase());
+				// Verifica se a cor já existe
+				const existe = Array.from(select.options).some(option => option.value.toLowerCase() === corFormatada.toLowerCase());
 
-		            if (!existe) {
-		                const novaOpcao = document.createElement('option');
-		                novaOpcao.value = corFormatada;
-		                novaOpcao.text = corFormatada;
+				if (!existe) {
+					const novaOpcao = document.createElement('option');
+					novaOpcao.value = corFormatada;
+					novaOpcao.text = corFormatada;
 
-		                // Adiciona antes da opção "Adicionar nova cor"
-		                select.insertBefore(novaOpcao, select.options[select.options.length - 2]);
+					// Adiciona antes da opção "Adicionar nova cor"
+					select.insertBefore(novaOpcao, select.options[select.options.length - 2]);
 
-		                // Salva no localStorage
-		                let coresSalvas = JSON.parse(localStorage.getItem('coresPersonalizadas')) || [];
-		                coresSalvas.push(corFormatada);
-		                localStorage.setItem('coresPersonalizadas', JSON.stringify(coresSalvas));
+					// Salva no localStorage
+					let coresSalvas = JSON.parse(localStorage.getItem('coresPersonalizadas')) || [];
+					coresSalvas.push(corFormatada);
+					localStorage.setItem('coresPersonalizadas', JSON.stringify(coresSalvas));
 
-		                // Seleciona a nova cor
-		                select.value = corFormatada;
-		            } else {
-		                alert('Essa cor já está na lista.');
-		                select.value = '';
-		            }
-		        } else {
-		            select.value = '';
-		        }
-		    }
+					// Seleciona a nova cor
+					select.value = corFormatada;
+				} else {
+					alert('Essa cor já está na lista.');
+					select.value = '';
+				}
+			} else {
+				select.value = '';
+			}
+		}
 
-		    // Exclui uma cor existente
-		    function excluirCor(select) {
-		        const coresSalvas = JSON.parse(localStorage.getItem('coresPersonalizadas')) || [];
-		        
-		        if (coresSalvas.length === 0) {
-		            alert('Não há cores personalizadas para excluir.');
-		            select.value = '';
-		            return;
-		        }
+		// Exclui uma cor existente
+		function excluirCor(select) {
+			const coresSalvas = JSON.parse(localStorage.getItem('coresPersonalizadas')) || [];
 
-		        const corParaExcluir = prompt(`Qual cor deseja excluir?\n${coresSalvas.join(', ')}`);
+			if (coresSalvas.length === 0) {
+				alert('Não há cores personalizadas para excluir.');
+				select.value = '';
+				return;
+			}
 
-		        if (corParaExcluir && coresSalvas.includes(corParaExcluir)) {
-		            // Remove do select
-		            Array.from(select.options).forEach(option => {
-		                if (option.value === corParaExcluir) {
-		                    select.removeChild(option);
-		                }
-		            });
+			const corParaExcluir = prompt(`Qual cor deseja excluir?\n${coresSalvas.join(', ')}`);
 
-		            // Remove do localStorage
-		            const novasCores = coresSalvas.filter(cor => cor !== corParaExcluir);
-		            localStorage.setItem('coresPersonalizadas', JSON.stringify(novasCores));
+			if (corParaExcluir && coresSalvas.includes(corParaExcluir)) {
+				// Remove do select
+				Array.from(select.options).forEach(option => {
+					if (option.value === corParaExcluir) {
+						select.removeChild(option);
+					}
+				});
 
-		            alert(`A cor "${corParaExcluir}" foi excluída com sucesso.`);
-		        } else if (corParaExcluir) {
-		            alert('Cor não encontrada.');
-		        }
+				// Remove do localStorage
+				const novasCores = coresSalvas.filter(cor => cor !== corParaExcluir);
+				localStorage.setItem('coresPersonalizadas', JSON.stringify(novasCores));
 
-		        select.value = '';
-		    }
+				alert(`A cor "${corParaExcluir}" foi excluída com sucesso.`);
+			} else if (corParaExcluir) {
+				alert('Cor não encontrada.');
+			}
+
+			select.value = '';
+		}
 
 		// Função para inicializar todas as funcionalidades
 		function inicializar() {
@@ -625,7 +753,7 @@
 
 		// Chama a função inicial ao carregar o script
 		inicializar();
-		
+
 	</script>
 
 </body>

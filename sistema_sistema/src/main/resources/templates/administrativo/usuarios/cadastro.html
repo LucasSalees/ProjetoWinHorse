@@ -2,7 +2,7 @@
 <html lang="pt-br">
 
 <head>
-	
+
 	<meta charset="utf-8"> <!-- Define a codificação de caracteres como UTF-8, suportando caracteres especiais -->
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<!-- Configura a página para ser responsiva em dispositivos móveis -->
@@ -27,7 +27,6 @@
 		type="image/x-icon">
 
 	<style>
-		
 		body {
 			font-family: "Asar", Sans-serif;
 			background-color: #C0C0C0;
@@ -138,8 +137,8 @@
 			color: #cf8311;
 			text-decoration: none;
 		}
-		
-		.dropdown{
+
+		.dropdown {
 			font-family: "Asar", Sans-serif;
 		}
 
@@ -274,9 +273,8 @@
 			width: 100%;
 			text-align: center;
 		}
-		
 	</style>
-	
+
 </head>
 
 <body>
@@ -286,7 +284,8 @@
 		<div class="container">
 			<!-- Logo à esquerda -->
 			<a class="navbar-brand" href="/home">
-				<img src="https://www.harasrosamystica.com.br/wp-content/uploads/2024/07/logo-header-novo.webp" alt="Logo Haras Rosa Mystica">
+				<img src="https://www.harasrosamystica.com.br/wp-content/uploads/2024/07/logo-header-novo.webp"
+					alt="Logo Haras Rosa Mystica">
 			</a>
 
 			<!-- Botão do menu responsivo -->
@@ -307,15 +306,15 @@
 					</a>
 
 					<div class="dropdown-menu dropdown-menu-left" style="width: 250px; background-color: #363636;">
-						
+
 						<a class="dropdown-item" href="/administrativo/usuarios/perfil"
 							style="display: flex; align-items: center; justify-content: space-between;">
-							
+
 							<span th:text="${usuarioLogado.nome_usuario}" style="border: 2px solid #ccc; padding: 5px 10px; border-radius: 5px; cursor: pointer; 
 				                         transition: all 0.3s ease; display: inline-block;">
 							</span>
 
-							
+
 							<i class="fa-solid fa-circle"
 								style="color: #00ff00; font-size: 12px; margin-left: 15px;"></i>
 						</a>
@@ -327,19 +326,18 @@
 				                        cursor: pointer; transition: all 0.3s ease;">
 								Administrador
 							</span>
-							
+
 							<i class="fa-solid fa-circle"
 								style="color: #363636; font-size: 12px; margin-left: 15px;"></i>
 						</a>
-						<a class="dropdown-item"
-						   href="/ajuda"
-						   style="display: flex; align-items: center; justify-content: space-between;">
-						   <span style="border: 2px solid #ccc; padding: 5px 10px; border-radius: 5px; 
+						<a class="dropdown-item" href="/ajuda"
+							style="display: flex; align-items: center; justify-content: space-between;">
+							<span style="border: 2px solid #ccc; padding: 5px 10px; border-radius: 5px; 
 						               cursor: pointer; transition: all 0.3s ease;">
-						       Manual
-						   </span>
-						   <i class="fa-solid fa-circle"
-						      style="color: #363636; font-size: 12px; margin-left: 15px;"></i>
+								Manual
+							</span>
+							<i class="fa-solid fa-circle"
+								style="color: #363636; font-size: 12px; margin-left: 15px;"></i>
 						</a>
 					</div>
 				</div>
@@ -369,7 +367,7 @@
 					<div class="col-md-6 mb-3">
 						<label>Nome</label>
 						<input type="text" th:field="*{nome_usuario}" placeholder="Nome do Usuário" class="form-control"
-							required />
+							required maxlength="30" />
 					</div>
 					<div class="col-md-6 mb-3">
 						<label for="celular">Número de celular</label>
@@ -383,7 +381,7 @@
 						<label>E-mail</label>
 						<div class="input-group">
 							<input type="text" th:field="*{email}" id="email" class="form-control" required
-							    placeholder="E-mail, sem @haras.com" maxlength="30" oninput="atualizarEmail()" />
+								placeholder="E-mail, sem @haras.com" maxlength="30" oninput="atualizarEmail()" />
 						</div>
 					</div>
 					<div class="col-md-6 mb-3">
@@ -399,7 +397,7 @@
 					<div class="col-md-6 mb-3">
 						<label>Senha</label>
 						<input type="text" th:field="*{senha}" placeholder="Senha do Usuário" class="form-control"
-							required maxlength="15"/>
+							required maxlength="15" />
 					</div>
 					<div class="col-md-6 mb-3">
 						<label>Endereço</label>
@@ -448,23 +446,23 @@
 
 		// Função para ajustar o e-mail antes de salvar
 		function atualizarEmail() {
-		        const emailInput = document.getElementById("email");
-		        const dominio = "@haras.com";
+			const emailInput = document.getElementById("email");
+			const dominio = "@haras.com";
 
-		        // Se o domínio já estiver no valor, extrai apenas a parte antes dele
-		        if (emailInput.value.includes(dominio)) {
-		            emailInput.value = emailInput.value.split(dominio)[0]; 
-		        }
+			// Se o domínio já estiver no valor, extrai apenas a parte antes dele
+			if (emailInput.value.includes(dominio)) {
+				emailInput.value = emailInput.value.split(dominio)[0];
+			}
 
-		        // Limita o nome do usuário a 20 caracteres
-		        let parteUsuario = emailInput.value.slice(0, 20);
+			// Limita o nome do usuário a 20 caracteres
+			let parteUsuario = emailInput.value.slice(0, 20);
 
-		        // Atualiza o campo com a parte do usuário + domínio
-		        emailInput.value = parteUsuario + dominio;
+			// Atualiza o campo com a parte do usuário + domínio
+			emailInput.value = parteUsuario + dominio;
 
-		        // Mantém o cursor no local correto (antes do domínio)
-		        emailInput.setSelectionRange(parteUsuario.length, parteUsuario.length);
-		    }
+			// Mantém o cursor no local correto (antes do domínio)
+			emailInput.setSelectionRange(parteUsuario.length, parteUsuario.length);
+		}
 
 		// Função para aplicar máscara no celular
 		function mascaraCelular(campo) {
