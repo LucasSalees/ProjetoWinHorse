@@ -473,18 +473,81 @@
 					</div>
 
 					<div class="col-12 col-md-6">
-						<label for="CorPalhetaSelect">Cor da Palheta</label>
-						<select id="CorPalhetaSelect" th:data-cor-garanhao="${garanhao.cor_palheta}" required
-							th:field="*{cor_palheta}" class="form-control select2" onchange="gerenciarCores(this)"
-							th:attr="disabled=${usuario.tipo != 'ADMIN'}">
-							<option value="">Escolha uma cor</option>
-							<option value="adicionar">+ Adicionar nova cor</option>
-							<option value="excluir">🗑️ Excluir uma cor</option>
-						</select>
+					    <label for="CorPalhetaSelect">Cor da Palheta</label>
+					    <select id="CorPalhetaSelect" th:data-cor-garanhao="${garanhao.cor_palheta}" required
+					        th:field="*{cor_palheta}" class="form-control select2" onchange="gerenciarCores(this)"
+					        th:attr="disabled=${usuario.tipo != 'ADMIN'}">
+					        <option value="">Escolha uma cor</option>
+					        <option value="adicionar">+ Adicionar nova cor</option>
+					        <option value="excluir">🗑️ Excluir uma cor</option>
+					    </select>
 					</div>
 
-
 				</div>
+				
+									<!-- Modal para Adicionar Cor -->
+					<div class="modal fade" id="modalAdicionarCor" tabindex="-1" aria-labelledby="modalAdicionarCorLabel" aria-hidden="true">
+					    <div class="modal-dialog">
+					        <div class="modal-content">
+					            <div class="modal-header">
+					                <h5 class="modal-title" id="modalAdicionarCorLabel">Adicionar Nova Cor</h5>
+					                <button type="button" class="fechar-modal" data-bs-dismiss="modal" aria-label="Fechar">
+					                    <i class="fa-solid fa-circle-xmark"></i>
+					                </button>
+					            </div>
+					            <div class="modal-body">
+					                <input type="text" id="inputNovaCor" class="form-control" placeholder="Digite o nome da nova cor">
+					            </div>
+					            <div class="modal-footer">
+					                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+					                <button type="button" class="btn btn-primary" onclick="confirmarAdicionarCor()">Adicionar</button>
+					            </div>
+					        </div>
+					    </div>
+					</div>
+					
+					<!-- Modal para Excluir Cor -->
+					<div class="modal fade" id="modalExcluirCor" tabindex="-1" aria-labelledby="modalExcluirCorLabel" aria-hidden="true">
+					    <div class="modal-dialog">
+					        <div class="modal-content">
+					            <div class="modal-header">
+					                <h5 class="modal-title" id="modalExcluirCorLabel">Excluir Cor</h5>
+					                <button type="button" class="fechar-modal" data-bs-dismiss="modal" aria-label="Fechar">
+					                    <i class="fa-solid fa-circle-xmark"></i>
+					                </button>
+					            </div>
+					            <div class="modal-body">
+					                <select id="selectExcluirCor" class="form-control">
+					                    <option value="">Selecione uma cor para excluir</option>
+					                </select>
+					            </div>
+					            <div class="modal-footer">
+					                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+					                <button type="button" class="btn btn-danger" onclick="confirmarExcluirCor()">Excluir</button>
+					            </div>
+					        </div>
+					    </div>
+					</div>
+					
+					<!-- Modal Dinâmico -->
+					<div class="modal fade" id="modalMensagem" tabindex="-1" aria-labelledby="modalMensagemLabel" aria-hidden="true">
+					  <div class="modal-dialog">
+					    <div class="modal-content">
+					      <div class="modal-header">
+					        <h5 class="modal-title" id="modalMensagemLabel">Aviso</h5>
+					       	<button type="button" class="fechar-modal" data-bs-dismiss="modal" aria-label="Fechar">
+			                    <i class="fa-solid fa-circle-xmark"></i>
+			                </button>
+					      </div>
+					      <div class="modal-body" id="modalMensagemTexto">
+					        <!-- Mensagem será inserida via JavaScript -->
+					      </div>
+					      <div class="modal-footer">
+					        <button type="button" class="btn btn-primary" id="btnFecharModalMensagem">OK</button>
+					      </div>
+					    </div>
+					  </div>
+					</div>
 
 				<div class="form-row">
 					<div class="col-12 col-md-6">
@@ -637,12 +700,12 @@
 						<i class="fa-solid fa-trash" style="color: #ffffff;"></i> Excluir
 					</a>
 
-					<a href="#" id="btnImprimir" class="btn btn-dark btn-sm " onclick="imprimirFormulario()">
+					<a href="#" id="btnImprimir" class="btn btn-dark btn-sm" onclick="imprimirFormulario()">
 						<i class="fa-solid fa-print"></i> Imprimir
 					</a>
 
 					<!-- Botão clicável para ADMIN -->
-					<button th:if="${usuario.tipo == 'ADMIN'}" type="submit" class="btn btn-light btn-sm">
+					<button th:if="${usuario.tipo == 'ADMIN'}" type="submit" class="btn btn-light btn-sm" id="btnEditarGaranhao">
 						<i class="fa-solid fa-plus"></i> Editar Garanhão
 					</button>
 
@@ -868,115 +931,203 @@
 			}
 		});
 
+		let modalAnterior = null; // Guarda o último modal aberto
+		let modalAdicionarCorInstance = null; // Guarda a instância do modal "Adicionar Nova Cor"
+
+		document.addEventListener("DOMContentLoaded", function () {
+		    carregarCoresSalvas(); // Carrega as cores salvas quando o DOM for carregado
+		});
+
+		function carregarCoresSalvas() {
+		    const select = document.getElementById('CorPalhetaSelect');
+		    const coresSalvas = JSON.parse(localStorage.getItem('coresPersonalizadas')) || [];
+
+		    // Adiciona cores salvas ao select, se não estiverem já presentes
+		    coresSalvas.forEach(cor => {
+		        if (![...select.options].some(option => option.value.toLowerCase() === cor.toLowerCase())) {
+		            const novaOpcao = document.createElement('option');
+		            novaOpcao.value = cor;
+		            novaOpcao.text = cor;
+		            select.insertBefore(novaOpcao, select.options[select.options.length - 2]);
+		        }
+		    });
+		}
+
 		function gerenciarCores(select) {
-			if (select.value === 'adicionar') {
-				adicionarCor(select);
-			} else if (select.value === 'excluir') {
-				excluirCor(select);
-			} else {
-				// Atualiza o localStorage somente se não estivermos na tela de edição com cor definida no banco
-				// (ou seja, se o atributo data-cor-garanhao estiver vazio)
-				const corDoGaranhao = select.getAttribute('data-cor-garanhao');
-				if (!corDoGaranhao || corDoGaranhao.trim() === "") {
-					localStorage.setItem('corSelecionada', select.value);
-				}
-			}
+		    if (select.value === 'adicionar') {
+		        abrirModalAdicionar(); // Abre o modal para adicionar cor
+		    } else if (select.value === 'excluir') {
+		        abrirModalExcluir(); // Abre o modal para excluir cor
+		    }
 		}
 
-		function adicionarCor(select) {
-			const novaCor = prompt('Digite o nome da nova cor:');
-			if (novaCor && novaCor.trim() !== '') {
-				const corFormatada = novaCor.trim();
-				const existe = Array.from(select.options).some(option => option.value.toLowerCase() === corFormatada.toLowerCase());
-				if (!existe) {
-					const novaOpcao = document.createElement('option');
-					novaOpcao.value = corFormatada;
-					novaOpcao.text = corFormatada;
-					// Insere antes da opção "adicionar" (se possível)
-					const indexAdicionar = [...select.options].findIndex(option => option.value === "adicionar");
-					if (indexAdicionar !== -1) {
-						select.insertBefore(novaOpcao, select.options[indexAdicionar]);
-					} else {
-						select.appendChild(novaOpcao);
-					}
-					// Atualiza o localStorage com a nova cor
-					let coresSalvas = JSON.parse(localStorage.getItem('coresPersonalizadas')) || [];
-					coresSalvas.push(corFormatada);
-					localStorage.setItem('coresPersonalizadas', JSON.stringify(coresSalvas));
-					select.value = corFormatada;
-					localStorage.setItem('corSelecionada', corFormatada);
-				} else {
-					alert('Essa cor já está na lista.');
-					select.value = '';
-				}
-			} else {
-				select.value = '';
-			}
+		function abrirModalAdicionar() {
+		    if (modalAnterior) {
+		        // Fecha o modal anterior, se houver
+		        const modalAnteriorInstance = bootstrap.Modal.getInstance(modalAnterior._element);
+		        modalAnteriorInstance.hide();
+		    }
+
+		    // Abre o modal de adicionar cor
+		    modalAdicionarCorInstance = new bootstrap.Modal(document.getElementById('modalAdicionarCor'));
+		    modalAdicionarCorInstance.show();
 		}
 
-		function excluirCor(select) {
-			const coresSalvas = JSON.parse(localStorage.getItem('coresPersonalizadas')) || [];
-			if (coresSalvas.length === 0) {
-				alert('Não há cores personalizadas para excluir.');
-				select.value = '';
-				return;
-			}
-			const corParaExcluir = prompt(`Qual cor deseja excluir?\n${coresSalvas.join(', ')}`);
-			if (corParaExcluir && coresSalvas.includes(corParaExcluir)) {
-				Array.from(select.options).forEach(option => {
-					if (option.value === corParaExcluir) {
-						select.removeChild(option);
-					}
-				});
-				const novasCores = coresSalvas.filter(cor => cor !== corParaExcluir);
-				localStorage.setItem('coresPersonalizadas', JSON.stringify(novasCores));
-				if (localStorage.getItem('corSelecionada') === corParaExcluir) {
-					localStorage.removeItem('corSelecionada');
-					select.value = '';
-				}
-				alert(`A cor "${corParaExcluir}" foi excluída com sucesso.`);
-			} else if (corParaExcluir) {
-				alert('Cor não encontrada.');
-			}
-			select.value = '';
+		function abrirModalExcluir() {
+		    const selectExcluir = document.getElementById('selectExcluirCor');
+		    selectExcluir.innerHTML = '<option value="">Selecione uma cor para excluir</option>';
+
+		    const coresSalvas = JSON.parse(localStorage.getItem('coresPersonalizadas')) || [];
+
+		    if (coresSalvas.length === 0) {
+		        // Exibe mensagem se não houver cores para excluir
+		        exibirModal('Não há cores personalizadas para excluir.');
+		        return;
+		    }
+
+		    // Preenche o select com as cores salvas
+		    coresSalvas.forEach(cor => {
+		        const option = document.createElement('option');
+		        option.value = cor;
+		        option.textContent = cor;
+		        selectExcluir.appendChild(option);
+		    });
+
+		    if (modalAnterior) {
+		        // Fecha o modal anterior, se houver
+		        const modalAnteriorInstance = bootstrap.Modal.getInstance(modalAnterior._element);
+		        modalAnteriorInstance.hide();
+		    }
+
+		    // Abre o modal de excluir cor
+		    modalAnterior = new bootstrap.Modal(document.getElementById('modalExcluirCor'));
+		    modalAnterior.show();
 		}
+
+		function confirmarAdicionarCor() {
+		    const inputNovaCor = document.getElementById('inputNovaCor').value.trim();
+		    const select = document.getElementById('CorPalhetaSelect');
+
+		    if (inputNovaCor !== '') {
+		        // Verifica se a cor já existe na lista
+		        const existe = Array.from(select.options).some(option => option.value.toLowerCase() === inputNovaCor.toLowerCase());
+
+		        if (!existe) {
+		            // Adiciona nova cor ao select e ao localStorage
+		            const novaOpcao = document.createElement('option');
+		            novaOpcao.value = inputNovaCor;
+		            novaOpcao.text = inputNovaCor;
+		            select.insertBefore(novaOpcao, select.options[select.options.length - 2]);
+
+		            let coresSalvas = JSON.parse(localStorage.getItem('coresPersonalizadas')) || [];
+		            coresSalvas.push(inputNovaCor);
+		            localStorage.setItem('coresPersonalizadas', JSON.stringify(coresSalvas));
+
+		            select.value = inputNovaCor;
+		        } else {
+		            // Exibe mensagem se a cor já estiver na lista
+		            exibirModal('Essa cor já está na lista.');
+		            bootstrap.Modal.getInstance(document.getElementById('modalAdicionarCor')).hide();
+		        }
+		    }
+
+		    document.getElementById('inputNovaCor').value = '';
+		    bootstrap.Modal.getInstance(document.getElementById('modalAdicionarCor')).hide();
+		}
+
+		function confirmarExcluirCor() {
+		    const selectExcluir = document.getElementById('selectExcluirCor');
+		    const corParaExcluir = selectExcluir.value;
+
+		    if (corParaExcluir) {
+		        const select = document.getElementById('CorPalhetaSelect');
+
+		        // Remove a cor selecionada do select
+		        Array.from(select.options).forEach(option => {
+		            if (option.value === corParaExcluir) {
+		                select.removeChild(option);
+		            }
+		        });
+
+		        // Atualiza o localStorage, removendo a cor excluída
+		        let coresSalvas = JSON.parse(localStorage.getItem('coresPersonalizadas')) || [];
+		        const novasCores = coresSalvas.filter(cor => cor !== corParaExcluir);
+		        localStorage.setItem('coresPersonalizadas', JSON.stringify(novasCores));
+
+		        // Exibe o modal com a mensagem de sucesso
+		        exibirModal(`A cor "${corParaExcluir}" foi excluída com sucesso.`);
+
+		        // Fecha o modal de exclusão
+		        bootstrap.Modal.getInstance(document.getElementById('modalExcluirCor')).hide();
+		    }
+		}
+
+		function exibirModal(mensagem) {
+		    document.getElementById('modalMensagemTexto').innerText = mensagem;
+		    var modalMensagem = new bootstrap.Modal(document.getElementById('modalMensagem'));
+		    modalMensagem.show();
+		}
+
+		document.getElementById('btnFecharModalMensagem').addEventListener('click', function () {
+		    // Fecha o modal de mensagem sem reabrir o modal de adicionar cor
+		    var modalMensagemInstance = bootstrap.Modal.getInstance(document.getElementById('modalMensagem'));
+		    if (modalMensagemInstance) {
+		        modalMensagemInstance.hide();
+		    }
+		});
+		
+		document.getElementById('btnEditarGaranhao').addEventListener('click', function (event) {
+		    const select = document.getElementById('CorPalhetaSelect');
+		    const selectedValue = select.value;
+
+		    // Verifica se a opção selecionada é "adicionar" ou "excluir"
+		    if (selectedValue === 'adicionar' || selectedValue === 'excluir') {
+		        // Impede o salvamento
+		        exibirModal('Você não pode salvar com a opção "Adicionar" ou "Excluir" selecionada. \n Por favor, selecione uma cor válida.');
+		        // Impede o envio do formulário ou a execução de qualquer ação de salvamento
+		        event.preventDefault(); // Impede a ação do botão de salvar
+		        return; // Não prossegue com o salvamento
+		    }
+		    
+		    salvarGaranhao();
+		});
+
+		// Função para exibir o modal
+		function exibirModal(mensagem) {
+		    document.getElementById('modalMensagemTexto').innerText = mensagem;
+		    var modalMensagem = new bootstrap.Modal(document.getElementById('modalMensagem'));
+		    modalMensagem.show();
+		}
+
 
 		// Função para imprimir o formulário
-		function imprimirFormulario() {
-			const nomeGaranhao = document.getElementById('nome_garanhao').value;
-			const corPalheta = document.querySelector('select[name="cor_palheta"]').value;
-			const botijao = document.querySelector('select[name="botijao"]').value;
-			const dataContagemInicial = document.getElementById('data_contagem_inicial').value;
-			const caneca = document.getElementById('caneca').value;
-			const dataCadastro = document.getElementById('data_cadastro').value;
-			const saldoInicialPalhetas = document.getElementById('saldo_inicial_palhetas').value;
-			const saldoAtualPalhetas = document.getElementById('saldo_atual_palhetas').value;
+		function imprimirFormulario(event) {
+		    const select = document.getElementById('CorPalhetaSelect');
+		    const selectedValue = select.value;
 
-			const janelaImpressao = window.open('', '', 'width=800,height=600');
-			janelaImpressao.document.write(`Conteúdo formatado aqui...`);
-			janelaImpressao.document.close();
-			janelaImpressao.print();
-		}
+		    // Verifica se a opção selecionada é "adicionar" ou "excluir"
+		    if (selectedValue === 'adicionar' || selectedValue === 'excluir') {
+		        // Impede o salvamento
+		        exibirModal('Você não pode imprimir com a opção "Adicionar" ou "Excluir" selecionada. \n Por favor, selecione uma cor válida.');
 
-		// Inicializa o script ao carregar
-		inicializar();
+		        // Impede o envio do formulário ou a execução de qualquer ação de salvamento
+		        event.preventDefault(); // Impede a ação do botão de salvar
+		        return; // Não prossegue com o salvamento
+		    }
 
-		function imprimirFormulario() {
-			// Captura os valores dos campos do formulário
-			const nomeGaranhao = document.getElementById('nome_garanhao').value;
-			const corPalheta = document.querySelector('select[name="cor_palheta"]').value;
-			const botijao = document.querySelector('select[name="botijao"]').value;
-			const dataContagemInicial = document.getElementById('data_contagem_inicial').value;
-			const caneca = document.getElementById('caneca').value;
-			const dataCadastro = document.getElementById('data_cadastro').value;
-			const saldoInicialPalhetas = document.getElementById('saldo_inicial_palhetas').value;
-			const saldoAtualPalhetas = document.getElementById('saldo_atual_palhetas').value;
+		    // Captura os valores dos campos do formulário
+		    const nomeGaranhao = document.getElementById('nome_garanhao').value;
+		    const corPalheta = document.querySelector('select[name="cor_palheta"]').value;
+		    const botijao = document.querySelector('select[name="botijao"]').value;
+		    const dataContagemInicial = document.getElementById('data_contagem_inicial').value;
+		    const caneca = document.getElementById('caneca').value;
+		    const dataCadastro = document.getElementById('data_cadastro').value;
+		    const saldoInicialPalhetas = document.getElementById('saldo_inicial_palhetas').value;
+		    const saldoAtualPalhetas = document.getElementById('saldo_atual_palhetas').value;
 
-			// Abre uma nova janela para impressão
-			const janelaImpressao = window.open('', '', 'width=800,height=600');
-
-			// Adiciona o conteúdo formatado para a impressão
-			janelaImpressao.document.write(`
+		    // Abre uma nova janela para impressão
+		    const janelaImpressao = window.open('', '', 'width=800,height=600');
+		    janelaImpressao.document.write(`
 				<html>
 				    <head>
 				        <title>Impressão - Haras Rosa Mystica</title>
@@ -1156,6 +1307,16 @@
 				janelaImpressao.close();
 			}, 500);
 		}
+		
+		// Função para exibir o modal com a mensagem
+		function exibirModal(mensagem) {
+		    document.getElementById('modalMensagemTexto').innerText = mensagem;
+		    var modalMensagem = new bootstrap.Modal(document.getElementById('modalMensagem'));
+		    modalMensagem.show();
+		}
+
+		// Inicializa o script ao carregar
+		inicializar();
 
 	</script>
 
