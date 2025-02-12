@@ -28,7 +28,7 @@ public class Garanhao implements Serializable {
     private int caneca;
     private String botijao;
     
-    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate data_contagem_inicial = LocalDate.now(); // Apenas data
     
     private LocalDateTime data_cadastro = LocalDateTime.now(); // Data e hora

@@ -587,7 +587,7 @@
 
 					<div class="col-12 col-md-6">
 						<label for="data_contagem_inicial" class="label-info">Data contagem inicial</label>
-						<input type="text" th:field="*{data_contagem_inicial}" class="form-control" readonly />
+						<input type="date" th:field="*{data_contagem_inicial}" class="form-control" />
 					</div>
 				</div>
 
@@ -1115,11 +1115,18 @@
 		        return; // Não prossegue com o salvamento
 		    }
 
-		    // Captura os valores dos campos do formulário
+		 // Captura os valores dos campos do formulário
 		    const nomeGaranhao = document.getElementById('nome_garanhao').value;
 		    const corPalheta = document.querySelector('select[name="cor_palheta"]').value;
 		    const botijao = document.querySelector('select[name="botijao"]').value;
-		    const dataContagemInicial = document.getElementById('data_contagem_inicial').value;
+
+		    // Captura e formata a data para dd-MM-yyyy
+		    const dataInput = document.getElementById('data_contagem_inicial').value;
+		    const dataObj = new Date(dataInput);
+		    const dataContagemInicial = !isNaN(dataObj.getTime()) 
+		        ? `${String(dataObj.getDate()).padStart(2, '0')}/${String(dataObj.getMonth() + 1).padStart(2, '0')}/${dataObj.getFullYear()}`: '';
+
+		    // Captura os outros valores normalmente
 		    const caneca = document.getElementById('caneca').value;
 		    const dataCadastro = document.getElementById('data_cadastro').value;
 		    const saldoInicialPalhetas = document.getElementById('saldo_inicial_palhetas').value;
